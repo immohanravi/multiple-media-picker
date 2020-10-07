@@ -4,21 +4,25 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import com.erikagtierrez.multiple_media_picker.Gallery;
 
+import java.util.ArrayList;
+
 
 public class Main extends AppCompatActivity {
     static final int OPEN_MEDIA_PICKER = 1;  // The request code
 
+    private static final String TAG = "Main";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,7 +84,22 @@ public class Main extends AppCompatActivity {
         Intent intent= new Intent(this, Gallery.class);
         intent.putExtra("title","Select media");
         intent.putExtra("mode",1);
-        intent.putExtra("maxSelection",3);
         startActivityForResult(intent,OPEN_MEDIA_PICKER);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // Check which request we're responding to
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == OPEN_MEDIA_PICKER) {
+            // Make sure the request was successful
+            if (resultCode == RESULT_OK && data != null) {
+                ArrayList<String> selectionResult = data.getStringArrayListExtra("result");
+                for(String name : selectionResult){
+
+                    Log.d(TAG, "onActivityResult: "+name);
+                }
+            }
+        }
     }
 }
